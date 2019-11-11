@@ -90,14 +90,15 @@ window.addEventListener('DOMContentLoaded', () => {
         counter = 0;
 
     intervalId = setInterval(() => {
+      console.log('intervalId: ', intervalId);
       popup.style.opacity = counter;
       counter += 0.1;
-    }, 10);
+      if (counter > 1 || screen.width < 768) {
+        clearInterval(intervalId);
+        popup.style.opacity = 1;
+      }
+    }, 30);
     
-    if (counter > 1 || screen.width < 768) {
-      clearInterval(intervalId);
-      popup.style.opacity = 1;
-    }
     
     popup.style.display = 'block';
   };
@@ -110,7 +111,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   popupClose.addEventListener('click', () => {
-    popup.style.display = 'none'
+    popup.style.display = 'none';
   });
 
 
@@ -123,8 +124,11 @@ window.addEventListener('DOMContentLoaded', () => {
   anchors.forEach((item) => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
-
-      let coordY = document.querySelector(item.getAttribute('href')).getBoundingClientRect().top + window.pageYOffset;
+      let coordY;
+      
+      if(!item.classList.contains('close-btn')) {
+        coordY = document.querySelector(item.getAttribute('href')).getBoundingClientRect().top + window.pageYOffset;
+      }
 
       const scrolling = setInterval( () => {
         let scrollBy = coordY / fps;
