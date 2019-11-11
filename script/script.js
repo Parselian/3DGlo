@@ -115,12 +115,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
   
-  //скролл
+  //якорный скролл
   const anchors = [].slice.call(document.querySelectorAll('a[href*="#"]')),
         animationTime = 400,
         fps = 50;
 
-  //якорный
   anchors.forEach((item) => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
