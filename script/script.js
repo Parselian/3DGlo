@@ -102,7 +102,6 @@ toggleMenu();
   // menuItems.forEach((item) => item.addEventListener('click', toggleMenu));
 
 
-
   // Попап
   const popup = document.querySelector('.popup'),
         popupBtn = document.querySelectorAll('.popup-btn');
