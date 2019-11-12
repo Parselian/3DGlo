@@ -61,28 +61,50 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
   // Меню
-  const menuBtn = document.querySelector('.menu'),
-        menu = document.querySelector('menu'),
-        closeBtn = document.querySelector('.close-btn'),
-        menuItems = menu.querySelectorAll('ul > li > a');
+  const menu = document.querySelector('menu'),
+        header = document.querySelector('header');
 
   const toggleMenu = () => {
-    if( !menu.style.transform || menu.style.transform === 'translateX(-100%)' ) {
-      menu.style.transform = `translateX(0)`;
-    } else {
-      menu.style.transform = `translateX(-100%)`;
-    }
-  };
 
-  menuBtn.addEventListener('click', toggleMenu);
-  closeBtn.addEventListener('click',toggleMenu);
-  menuItems.forEach((item) => item.addEventListener('click', toggleMenu));
+    header.addEventListener('click', (e) => {
+      let target = e.target;
+          target = target.closest('.menu');
+      
+      if(target) {
+        if( !menu.style.transform || menu.style.transform === 'translateX(-100%)' ) {
+          menu.style.transform = `translateX(0)`;
+        } else {
+          menu.style.transform = `translateX(-100%)`;
+        }
+      }
+    });
+        
+    menu.addEventListener('click', (e) => {
+      let target = e.target;
+          
+      if(target.matches('.close-btn')) {
+        menu.style.transform = `translateX(-100%)`;
+      } else {
+        target = target.closest('a');
+
+        if(target) {
+          menu.style.transform = `translateX(-100%)`;
+        }
+      }
+    });
+};
+
+toggleMenu();
+
+
+  // menuBtn.addEventListener('click', toggleMenu);
+  // closeBtn.addEventListener('click', toggleMenu);
+  // menuItems.forEach((item) => item.addEventListener('click', toggleMenu));
 
 
 
   // Попап
   const popup = document.querySelector('.popup'),
-        popupClose = popup.querySelector('.popup-close'),
         popupBtn = document.querySelectorAll('.popup-btn');
 
   const animatePopup = () => {
@@ -110,8 +132,18 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  popupClose.addEventListener('click', () => {
-    popup.style.display = 'none';
+  popup.addEventListener('click', (e) => {
+    
+    let target = e.target;
+    if( target.classList.contains('popup-close')) {
+      popup.style.display = 'none'; 
+    } else {
+      target = target.closest('.popup-content');
+  
+      if(!target) {
+        popup.style.display = 'none'; 
+      }
+    }
   });
 
 
@@ -125,7 +157,7 @@ window.addEventListener('DOMContentLoaded', () => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
       let coordY;
-      
+
       if(!item.classList.contains('close-btn')) {
         coordY = document.querySelector(item.getAttribute('href')).getBoundingClientRect().top + window.pageYOffset;
       }
@@ -141,4 +173,43 @@ window.addEventListener('DOMContentLoaded', () => {
       }, animationTime / fps);
     });
   }); 
+
+
+
+  //переключение табов
+
+  const tabs = () => {
+
+    const serviceHeader = document.querySelector('.service-header'),
+          serviceTab = serviceHeader.querySelectorAll('.service-header-tab'),
+          tab = document.querySelectorAll('.service-tab');
+
+    const toggleTabContent = (index) => {
+      for(let i = 0; i < tab.length; i++) {
+        if(index === i) {
+          serviceTab[i].classList.add('active');
+          tab[i].classList.remove('d-none');
+        } else {
+          serviceTab[i].classList.remove('active');
+          tab[i].classList.add('d-none');
+        }
+      }
+    };
+
+    serviceHeader.addEventListener('click', (e) => {
+
+      let target = e.target;
+      target = target.closest('.service-header-tab');
+
+      if(target) {
+        serviceTab.forEach( (item, i) => {
+          if(item === target) {
+            toggleTabContent(i);
+          }
+        });
+      }
+    });
+  };
+
+  tabs();
 });
