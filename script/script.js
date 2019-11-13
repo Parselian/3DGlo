@@ -61,38 +61,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
   // Меню
-  const menu = document.querySelector('menu'),
-        header = document.querySelector('header');
+  const menu = document.querySelector('menu');
 
   const toggleMenu = () => {
-
-    // header.addEventListener('click', (e) => {
-    //   let target = e.target;
-    //       target = target.closest('.menu');
-      
-    //   if(target) {
-    //     if( !menu.style.transform || menu.style.transform === 'translateX(-100%)' ) {
-    //       menu.style.transform = `translateX(0)`;
-    //     } else {
-    //       menu.style.transform = `translateX(-100%)`;
-    //     }
-    //   }
-    // });
-        
-    // menu.addEventListener('click', (e) => {
-    //   let target = e.target;
-          
-    //   if(target.matches('.close-btn')) {
-    //     menu.style.transform = `translateX(-100%)`;
-    //   } else {
-    //     target = target.closest('a');
-
-    //     if(target) {
-    //       menu.style.transform = `translateX(-100%)`;
-    //     }
-    //   }
-    // });
-
     window.addEventListener('click', (e) => {
       let target = e.target;
           target = target.closest('.menu');
@@ -119,17 +90,10 @@ window.addEventListener('DOMContentLoaded', () => {
           } 
         }
       }
-
     });
 };
 
 toggleMenu();
-
-
-  // menuBtn.addEventListener('click', toggleMenu);
-  // closeBtn.addEventListener('click', toggleMenu);
-  // menuItems.forEach((item) => item.addEventListener('click', toggleMenu));
-
 
   // Попап
   const popup = document.querySelector('.popup'),
@@ -161,8 +125,8 @@ toggleMenu();
   });
 
   popup.addEventListener('click', (e) => {
-    
     let target = e.target;
+    
     if( target.classList.contains('popup-close')) {
       popup.style.display = 'none'; 
     } else {
@@ -174,19 +138,20 @@ toggleMenu();
     }
   });
 
-
-  
   //якорный скролл
   const anchors = [].slice.call(document.querySelectorAll('a[href*="#"]')),
         animationTime = 400,
         fps = 50;
 
   anchors.forEach((item) => {
+    
     item.addEventListener('click', (e) => {
       e.preventDefault();
-      let coordY;
+      let coordY;     
 
-      if(!item.classList.contains('close-btn')) {
+      if(item.matches('.close-btn, .portfolio-btn')) {
+        return;
+      } else {
         coordY = document.querySelector(item.getAttribute('href')).getBoundingClientRect().top + window.pageYOffset;
       }
 
@@ -203,9 +168,7 @@ toggleMenu();
   }); 
 
 
-
   //переключение табов
-
   const tabs = () => {
 
     const serviceHeader = document.querySelector('.service-header'),
@@ -240,4 +203,106 @@ toggleMenu();
   };
 
   tabs();
+
+  //слайдер
+  const slider = () => {
+    const portfolioContent = document.querySelector('.portfolio-content'),
+          portfolioItem = document.querySelectorAll('.portfolio-item'),
+          dotsWrap = document.querySelector('.portfolio-dots');
+
+    let currSlide = 0,
+        interval,
+        dot = document.createElement('li');
+    
+    dot.classList.add('dot');
+
+    for( let i = 0; i < portfolioItem.length; i++ ) {
+      let clonedDot = dot.cloneNode();
+      if( i === 0 ) {
+        clonedDot.classList.add('dot-active');
+      }
+      dotsWrap.appendChild(clonedDot);
+    }
+
+    dot = document.querySelectorAll('.dot');
+
+    const prevSlide = (elem, index, strClass) => {
+      elem[index].classList.remove(strClass);
+    };
+
+    const nextSlide = (elem, index, strClass) => {
+      elem[index].classList.add(strClass);
+    };
+
+    const autoplaySlide = () => {
+      prevSlide(portfolioItem, currSlide, 'portfolio-item-active');
+      prevSlide(dot, currSlide, 'dot-active');
+      currSlide++;
+      if(currSlide >= portfolioItem.length) {
+        currSlide = 0;
+      } 
+      nextSlide(portfolioItem, currSlide, 'portfolio-item-active');
+      nextSlide(dot, currSlide, 'dot-active');
+    };
+
+    const startSlide = (time = 3500) => {
+      interval = setInterval(autoplaySlide, time);
+    };
+
+    const stopSlide = () => {
+      clearInterval(interval);
+    };
+
+    portfolioContent.addEventListener('click', (e) => {
+      
+      e.preventDefault();
+      let target = e.target;
+
+      if(!target.matches('.portfolio-btn, .dot')) {
+        return;
+      }
+
+      prevSlide(portfolioItem, currSlide, 'portfolio-item-active');
+      prevSlide(dot, currSlide, 'dot-active');
+
+      if( target.matches('#arrow-left') ) {
+        currSlide--;
+      } else if( target.matches('#arrow-right') ) {
+        currSlide++;
+      } else if( target.matches('.dot')) {
+        dot.forEach((item, i) => {
+          if(target === item) {
+            currSlide = i;
+          }
+        });
+      }
+
+      if(currSlide >= portfolioItem.length) {
+        currSlide = 0;
+      } else if(currSlide < 0 ) {
+        currSlide = portfolioItem.length - 1;
+      }
+
+      nextSlide(portfolioItem, currSlide, 'portfolio-item-active');
+      nextSlide(dot, currSlide, 'dot-active');
+    });
+
+    portfolioContent.addEventListener('mouseover', (e) => {
+      if(e.target.matches('.portfolio-btn') || e.target.matches('.dot')) {
+        stopSlide();
+      }
+    });
+
+    portfolioContent.addEventListener('mouseout', (e) => {
+      if(e.target.matches('.portfolio-btn') || e.target.matches('.dot')) {
+        startSlide();
+      }
+    });
+
+    startSlide(1000);
+  };
+
+  slider();
+  
+  
 });
