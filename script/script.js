@@ -60,8 +60,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   timer('17 november 2019', '#timer-hours', '#timer-minutes', '#timer-seconds');
 
-
-
   // Меню
   const menu = document.querySelector('menu');
 
@@ -168,7 +166,6 @@ toggleMenu();
       }, animationTime / fps);
     });
   }); 
-
 
   //переключение табов
   const tabs = () => {
@@ -306,5 +303,50 @@ toggleMenu();
 
   slider();
   
+  //интерактивное изменение фото
+  const commandWrap = document.querySelector('#command');
+
+  const changePhotos = () => {
+    const changeDataImg = (target, def) => {
+      if(target.attributes.src.value !== target.dataset.img) {
+        target.src = target.dataset.img;
+        target.dataset.img = def;
+      } 
   
+      if (target.attributes.src.value === target.dataset.img) {
+        target.setAttribute('src', def);
+      }
+    };
+  
+    commandWrap.addEventListener('mouseover', (e) => {
+      let target = e.target;
+  
+      if(target.matches('img')) {
+        let targetDefaultImg = target.attributes.src.value;
+        changeDataImg(target, targetDefaultImg);
+      }
+    });
+  
+    commandWrap.addEventListener('mouseout', (e) => {
+      let target = e.target;
+      
+      if(target.matches('img')) {
+        let targetDefaultImg = target.attributes.src.value;
+        changeDataImg(target, targetDefaultImg);
+      }
+    });
+  };
+
+  changePhotos();
+  
+  //валидация калькулятора
+  const calcBlock = document.querySelector('.calc-block');
+
+  calcBlock.addEventListener('input', (e) => {
+    let target = e.target;
+
+    if( target.matches('input') ) {
+      target.value = target.value.replace(/\D/g, '');
+    }
+  });
 });
