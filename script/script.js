@@ -1,3 +1,5 @@
+'use strict';
+
 window.addEventListener('DOMContentLoaded', () => {
 
   const timer = (deadline, hour, minute, second) => {
