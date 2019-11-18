@@ -371,6 +371,23 @@ window.addEventListener('DOMContentLoaded', () => {
         totalField = document.getElementById('total');
 
   const calculator = (price = 100) => {
+    let count = 0;
+
+    // const animateCost = (totalValue) => {
+    //   let timerId;
+    //   console.log(totalValue);
+    //   console.log(count);
+    //   timerId = setInterval(function () {
+    //     if( count > totalValue ) {
+    //       clearInterval(timerId);
+    //     } else {
+    //       totalField.textContent = count;
+    //       count += 50;
+    //       timerId;
+    //     }
+    //   }, 5);
+    //   count = 0;
+    // };
 
     const calc = () => {
       let calcTypeValue = calcType.value,
@@ -383,10 +400,12 @@ window.addEventListener('DOMContentLoaded', () => {
         calcCountValue += ( calcCount.value - 1 ) / 10;
       }
 
-      if ( calcDay.value && calcDay.value < 5 ) {
+      if( calcDay.value && calcDay.value < 5 ) {
         calcDayValue *= 2;
       } else if( calcDay.value && calcDay.value < 10 ) {
         calcDayValue *= 1.5;
+      } else if( calcDay.value && calcDay.value >= 10 ) {
+        calcDayValue = 1;
       }
 
       if( calcTypeValue && calcSquareValue ) {
@@ -395,10 +414,21 @@ window.addEventListener('DOMContentLoaded', () => {
         totalValue = 0;
       }
 
-      totalField.textContent = totalValue;
+      let timerId;
+
+      timerId = setInterval(function () {
+        if( count <= totalValue ) {
+          totalField.textContent = count;
+          count += 50;
+          timerId;
+        } else {
+          clearInterval(timerId);
+        }
+      }, 10);
+      count = 0;
     };
 
-    calcBlock.addEventListener('input', (e) => {
+    calcBlock.addEventListener('change', (e) => {
       const target = e.target;
 
       if( target === calcSquare || target === calcType || 
