@@ -363,15 +363,14 @@ window.addEventListener('DOMContentLoaded', () => {
   calcValidation();
 
   //калькулятор
-  const calcBlock = document.querySelector('.calc-block'),
+  const calculator = (price = 100) => {
+    const calcBlock = document.querySelector('.calc-block'),
         calcType = calcBlock.querySelector('.calc-type'),
         calcSquare = calcBlock.querySelector('.calc-square'),
         calcCount = calcBlock.querySelector('.calc-count'),
         calcDay = calcBlock.querySelector('.calc-day'),
         totalField = document.getElementById('total');
-
-  const calculator = (price = 100) => {
-    let count = 0;
+    let count = +totalField.textContent;
 
     // const animateCost = (totalValue) => {
     //   let timerId;
@@ -414,21 +413,38 @@ window.addEventListener('DOMContentLoaded', () => {
         totalValue = 0;
       }
 
-      let timerId;
+      let timerIdAsc,
+          timerIdDec;
 
-      timerId = setInterval(function () {
+      timerIdAsc = setInterval(() => {
         if( count <= totalValue ) {
           totalField.textContent = count;
           count += 50;
-          timerId;
         } else {
-          clearInterval(timerId);
+          clearInterval(timerIdAsc);
         }
       }, 10);
-      count = 0;
+
+      timerIdDec = setInterval(() => {
+        if( count > totalValue && count !== totalValue ) {
+          totalField.textContent = count;
+          count -= 50;
+        } else {
+          totalField.textContent = count;
+          clearInterval(timerIdDec);
+        }
+      }, 10);
+
+      if ( count <= totalValue ) {
+        clearInterval(timerIdDec);
+        timerIdAsc;
+      } else if ( count >= totalValue && count !== totalValue ) {
+        clearInterval(timerIdAsc);
+        timerIdDec;
+      }
     };
 
-    calcBlock.addEventListener('change', (e) => {
+    calcBlock.addEventListener('input', (e) => {
       const target = e.target;
 
       if( target === calcSquare || target === calcType || 
