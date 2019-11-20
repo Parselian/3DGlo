@@ -36,12 +36,12 @@ class Validator {
     if(this.method) {
       const method = this.method[elem.id];
 
-      console.log(method);
+      // console.log(method);
   
       if(method) {
         return method.every(item => {
-          console.log(this.pattern[item[1]]);
-          console.log(validatorMethod[item[0]](elem, this.pattern[item[1]]));
+          // console.log(this.pattern[item[1]]);
+          // console.log(validatorMethod[item[0]](elem, this.pattern[item[1]]));
           return validatorMethod[item[0]](elem, this.pattern[item[1]]);
         });
       }
