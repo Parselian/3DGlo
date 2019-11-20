@@ -451,18 +451,42 @@ window.addEventListener('DOMContentLoaded', () => {
           loadingMessage = 'Загрузка...',
           successMessage = 'Спасибо! Наш менеджер скоро с вами свяжется.',
           form = document.getElementById(selector),
-          statusMessage = document.createElement('div');
+          statusMessage = document.createElement('div'),
+          spinner = document.createElement('div');
+    let counter = 0,
+        intervalId;
 
-    statusMessage.textContent = loadingMessage;
     statusMessage.style.cssText = `
       color: #fff;
       font-size: 2rem;
     `;
 
+    const animateSpinner = () => {
+      spinner.style.cssText = `
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 26px;
+        height: 26px;
+        border: 2px dashed #fff;
+        border-radius: 13px;
+      `;
+      form.appendChild(spinner);
+
+      intervalId = setInterval(() => {
+        counter += 5;
+        if(counter >= 360) {
+          counter = 0;
+        }
+        spinner.style.transform = `rotate(${counter}deg)`;
+        intervalId;
+      }, 20);
+    };
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       form.appendChild(statusMessage);
-      statusMessage.textContent = loadingMessage;
+      animateSpinner();
       
       const formData = new FormData(form),
             body = {};
@@ -474,6 +498,7 @@ window.addEventListener('DOMContentLoaded', () => {
       postData(body, 
         () => {
           statusMessage.textContent = successMessage;
+          form.removeChild(spinner);
           [...form.elements].forEach((item) => {
             if(item.tagName === 'INPUT') {
               item.value = '';
@@ -483,6 +508,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 
         (error) => {
         statusMessage.textContent = errorMessage;
+        form.removeChild(spinner);
         console.error(error);
       });
     });
@@ -496,8 +522,10 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         if(request.status === 200) {
+          clearInterval(intervalId);
           callback();
         } else {
+          clearInterval(intervalId);
           callbackError(request.status);
         }
       });
