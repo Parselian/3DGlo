@@ -448,7 +448,6 @@ window.addEventListener('DOMContentLoaded', () => {
   //send-ajax-form
   const sendForm = (selector) => {
     const errorMessage = 'Что-то пошло не так...',
-          loadingMessage = 'Загрузка...',
           successMessage = 'Спасибо! Наш менеджер скоро с вами свяжется.',
           form = document.getElementById(selector),
           statusMessage = document.createElement('div'),
@@ -495,46 +494,45 @@ window.addEventListener('DOMContentLoaded', () => {
         body[key] = val;
       });
 
-      postData(body, 
-        () => {
-          statusMessage.textContent = successMessage;
-          form.removeChild(spinner);
-          [...form.elements].forEach((item) => {
-            if(item.tagName === 'INPUT') {
-              item.value = '';
-              item.classList.remove('success');
+      const postData = (body) => {
+        return new Promise((resolve, reject) => {
+          const request = new XMLHttpRequest();
+          request.addEventListener('readystatechange', () => {
+    
+            if(request.readyState !== 4) {
+              return;
+            }
+    
+            if(request.status === 200) {
+              clearInterval(intervalId);
+              resolve();
+            } else {
+              clearInterval(intervalId);
+              reject(errorMessage);
             }
           });
-        }, 
-        (error) => {
+          request.open('POST', './server.php');
+          request.setRequestHeader('Content-Type', 'application/JSON');  
+    
+          request.send(JSON.stringify(body));
+        });
+      };
+
+      postData(body).then(() => {
+        statusMessage.textContent = successMessage;
+        form.removeChild(spinner);
+        [...form.elements].forEach((item) => {
+          if(item.tagName === 'INPUT') {
+            item.value = '';
+            item.classList.remove('success');
+          }
+        });
+      }) 
+      .catch(() => {
         statusMessage.textContent = errorMessage;
         form.removeChild(spinner);
-        console.error(error);
       });
     });
-
-    const postData = (body, callback, callbackError) => {
-      const request = new XMLHttpRequest();
-      request.addEventListener('readystatechange', () => {
-
-        if(request.readyState !== 4) {
-          return;
-        }
-
-        if(request.status === 200) {
-          clearInterval(intervalId);
-          callback();
-        } else {
-          clearInterval(intervalId);
-          callbackError(request.status);
-        }
-      });
-
-      request.open('POST', './server.php');
-      request.setRequestHeader('Content-Type', 'application/JSON');  
-
-      request.send(JSON.stringify(body));
-    }
   };
 
   sendForm('form1');
