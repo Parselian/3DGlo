@@ -495,30 +495,20 @@ window.addEventListener('DOMContentLoaded', () => {
       });
 
       const postData = (body) => {
-        return new Promise((resolve, reject) => {
-          const request = new XMLHttpRequest();
-          request.addEventListener('readystatechange', () => {
-    
-            if(request.readyState !== 4) {
-              return;
-            }
-    
-            if(request.status === 200) {
-              clearInterval(intervalId);
-              resolve();
-            } else {
-              clearInterval(intervalId);
-              reject(errorMessage);
-            }
-          });
-          request.open('POST', './server.php');
-          request.setRequestHeader('Content-Type', 'application/JSON');  
-    
-          request.send(JSON.stringify(body));
+        return fetch('./server.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/JSON'
+          },
+          body: JSON.stringify(body) 
         });
       };
 
-      postData(body).then(() => {
+      postData(body).then((response) => {
+        clearInterval(intervalId);
+        if(response.status !== 200) {
+          throw  new Error('error network status is`nt 200');
+        }
         statusMessage.textContent = successMessage;
         form.removeChild(spinner);
         [...form.elements].forEach((item) => {
@@ -528,7 +518,8 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         });
       }) 
-      .catch(() => {
+      .catch((error) => {
+        console.error(error);
         statusMessage.textContent = errorMessage;
         form.removeChild(spinner);
       });
