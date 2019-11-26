@@ -7,7 +7,6 @@ const popupFunc = () => {
         counter = 0;
 
     intervalId = setInterval(() => {
-      console.log('intervalId: ', intervalId);
       popup.style.opacity = counter;
       counter += 0.1;
       if (counter > 1 || screen.width < 768) {
