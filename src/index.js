@@ -5,6 +5,7 @@ import 'nodelist-foreach-polyfill';
 import 'formdata-polyfill';
 import 'es6-promise';
 import 'fetch-polyfill';
+import 'element-remove';
 import elementClosest from 'element-closest';
 elementClosest(window);
 
