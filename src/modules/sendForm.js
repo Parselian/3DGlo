@@ -2,6 +2,7 @@ const sendForm = (selector) => {
   const errorMessage = 'Что-то пошло не так...',
         successMessage = 'Спасибо! Наш менеджер скоро с вами свяжется.',
         form = document.getElementById(selector),
+        button = form.querySelector('.form-btn'),
         statusMessage = document.createElement('div'),
         spinner = document.createElement('div');
   let counter = 0,
@@ -38,6 +39,26 @@ const sendForm = (selector) => {
     e.preventDefault();
     form.appendChild(statusMessage);
     animateSpinner();
+
+    const checkInputs = () => {
+      
+      [...form.elements].forEach((item) => {
+        // console.log(item.value);
+        // console.log(button);
+        if(item.value === '' || item.value === null) {
+          button.classList.add('button-error');
+          console.log(0);
+          return false;
+        } else {
+          button.classList.remove('button-error');
+          console.log(1);
+          return true;
+        }
+      });
+    };
+
+    checkInputs();
+
     
     const formData = new FormData(form),
           body = {};
@@ -58,14 +79,14 @@ const sendForm = (selector) => {
 
     postData(body).then((response) => {
       clearInterval(intervalId);
-      if(response.status !== 200) {
+      if(response.status !== 200 ) {
         throw  new Error('error network status is`nt 200');
       }
-      statusMessage.textContent = successMessage;
       form.removeChild(spinner);
       [...form.elements].forEach((item) => {
         if(item.tagName === 'INPUT') {
           item.value = '';
+          item.classList.remove('error');
           item.classList.remove('success');
         }
       });

@@ -1,6 +1,7 @@
 class Validator {
   constructor({selector, pattern = {}, method}) {
     this.form = document.querySelector(selector);
+    this.button = this.form.querySelector('.form-btn');
     this.pattern = pattern;
     this.method = method;
     this.elementsForm = [...this.form.elements].filter(item => {
@@ -18,7 +19,7 @@ class Validator {
       if(this.error.size) {
         e.preventDefault();
       }
-    })
+    });
   }
 
   isValid(elem) {
@@ -27,6 +28,7 @@ class Validator {
         if( elem.value.trim() === '' ) {
           return false;
         }
+        // console.log(1);
         return true;
       },
       pattern(elem, pattern) {
@@ -55,12 +57,16 @@ class Validator {
   checkIt(event) {
     const target = event.target;
 
+
     if(this.isValid(target)) {
       this.showSuccess(target);
       this.error.delete(target);
+      // this.checkNull();
     } else {
       this.showError(target);
       this.error.add(target);
+      console.log(this.button);
+      this.button.classList.add('button-error');
     }
   }
 
@@ -101,6 +107,15 @@ class Validator {
         font-size: 14px;
         color: red;
       }
+      .button-error {
+        background-color: red;
+        opacity: 1;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .button-error:hover {
+        background-color: red
+      }
     `;
     document.head.appendChild(style);
   }
@@ -116,6 +131,17 @@ class Validator {
     }
 
   }
+
+  // checkNull() {
+  //   // console.log(this.elementsForm);
+  //     this.elementsForm.forEach(item => {
+  //       if(!item.matches('error') || item.value !== '' || item.value !== null) {
+  //         console.log(1);
+  //         // this.button.classList.remove('button-error');
+  //         return;
+  //       }
+  //     });
+  // }
 }
 
 export default Validator;

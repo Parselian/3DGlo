@@ -50,6 +50,8 @@ const calculator = (price = 100) => {
         }
       }, 10); 
     } else {
+      count = 0;
+      totalField.textContent = 0;
       totalValue = 0;
     }
 
