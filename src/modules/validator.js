@@ -1,7 +1,7 @@
 class Validator {
   constructor({selector, pattern = {}, method}) {
     this.form = document.querySelector(selector);
-    this.button = this.form.querySelector('.form-btn')
+    this.button = this.form.querySelector('.form-btn');
     this.pattern = pattern;
     this.method = method;
     this.elementsForm = [...this.form.elements].filter(item => {
@@ -11,6 +11,7 @@ class Validator {
   }
 
   init() {
+    this.button.classList.add('button-error');
     this.applyStyle();
     this.setPattern();
     this.elementsForm.forEach(elem => elem.addEventListener('change', this.checkIt.bind(this)));
