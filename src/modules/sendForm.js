@@ -39,26 +39,6 @@ const sendForm = (selector) => {
     e.preventDefault();
     form.appendChild(statusMessage);
     animateSpinner();
-
-    const checkInputs = () => {
-      
-      [...form.elements].forEach((item) => {
-        // console.log(item.value);
-        // console.log(button);
-        if(item.value === '' || item.value === null) {
-          button.classList.add('button-error');
-          console.log(0);
-          return false;
-        } else {
-          button.classList.remove('button-error');
-          console.log(1);
-          return true;
-        }
-      });
-    };
-
-    checkInputs();
-
     
     const formData = new FormData(form),
           body = {};
@@ -88,6 +68,7 @@ const sendForm = (selector) => {
           item.value = '';
           item.classList.remove('error');
           item.classList.remove('success');
+          statusMessage.textContent = successMessage;
         }
       });
     }) 

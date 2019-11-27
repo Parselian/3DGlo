@@ -1,7 +1,7 @@
 class Validator {
   constructor({selector, pattern = {}, method}) {
     this.form = document.querySelector(selector);
-    this.button = this.form.querySelector('.form-btn');
+    this.button = this.form.querySelector('.form-btn')
     this.pattern = pattern;
     this.method = method;
     this.elementsForm = [...this.form.elements].filter(item => {
@@ -28,7 +28,6 @@ class Validator {
         if( elem.value.trim() === '' ) {
           return false;
         }
-        // console.log(1);
         return true;
       },
       pattern(elem, pattern) {
@@ -56,19 +55,36 @@ class Validator {
 
   checkIt(event) {
     const target = event.target;
-
+    let arr = []
 
     if(this.isValid(target)) {
       this.showSuccess(target);
       this.error.delete(target);
-      // this.checkNull();
     } else {
       this.showError(target);
       this.error.add(target);
-      console.log(this.button);
-      this.button.classList.add('button-error');
     }
+
+    this.elementsForm.forEach((ite, i) => {
+      if(ite.matches('.error') || ite.value === '' || ite.value === null) {
+        arr[i] = 0;
+      }
+      if(!ite.matches('.error') && ite.value !== '' && ite.value !== null) {
+        arr[i] = 1;
+      }
+    });
+
+    if(arr.join('') === '111' || arr.join('') === '1111') {
+      this.button.classList.remove('button-error');
+      arr = [];
+    } else {
+      this.button.classList.add('button-error');
+      arr = [];
+    }
+    console.log(arr);
   }
+
+  /* можно записать результаты в массив и если все будут единички, то активировать кнопку, иначе заблокировать */
 
 
   showError(elem) {
@@ -131,17 +147,6 @@ class Validator {
     }
 
   }
-
-  // checkNull() {
-  //   // console.log(this.elementsForm);
-  //     this.elementsForm.forEach(item => {
-  //       if(!item.matches('error') || item.value !== '' || item.value !== null) {
-  //         console.log(1);
-  //         // this.button.classList.remove('button-error');
-  //         return;
-  //       }
-  //     });
-  // }
 }
 
 export default Validator;
