@@ -2,11 +2,12 @@ const sendForm = (selector) => {
   const errorMessage = 'Что-то пошло не так...',
         successMessage = 'Спасибо! Наш менеджер скоро с вами свяжется.',
         form = document.getElementById(selector),
-        button = form.querySelector('.form-btn'),
+        nullMessage = 'Правильно заполните все поля!',
         statusMessage = document.createElement('div'),
         spinner = document.createElement('div');
   let counter = 0,
-      intervalId;
+      intervalId,
+      arr = [];
 
   statusMessage.style.cssText = `
     color: #fff;
@@ -38,45 +39,60 @@ const sendForm = (selector) => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     form.appendChild(statusMessage);
-    animateSpinner();
-    
-    const formData = new FormData(form),
-          body = {};
+    statusMessage.textContent = '';
 
-    formData.forEach((val, key) => {
-      body[key] = val;
-    });
-
-    const postData = (body) => {
-      return fetch('./server.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/JSON'
-        },
-        body: JSON.stringify(body) 
-      });
-    };
-
-    postData(body).then((response) => {
-      clearInterval(intervalId);
-      if(response.status !== 200 ) {
-        throw  new Error('error network status is`nt 200');
+    [...form.elements].forEach((item, i) => {
+      if(item.tagName === 'INPUT' && item.value !== '' && !item.matches('.error')) {
+        arr[i] = 1;
+      } else if(item.tagName === 'BUTTON') {
+        return;
+      } else {
+        arr[i] = 0;
       }
-      form.removeChild(spinner);
-      [...form.elements].forEach((item) => {
-        if(item.tagName === 'INPUT') {
-          item.value = '';
-          item.classList.remove('error');
-          item.classList.remove('success');
-          statusMessage.textContent = successMessage;
-        }
-      });
-    }) 
-    .catch((error) => {
-      console.error(error);
-      statusMessage.textContent = errorMessage;
-      form.removeChild(spinner);
     });
+    
+    if(arr.join('') === '111' || arr.join('') === '1111') {
+      animateSpinner();
+      const formData = new FormData(form),
+        body = {};
+
+      formData.forEach((val, key) => {
+        body[key] = val;
+      });
+
+      const postData = (body) => {
+        return fetch('./server.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/JSON'
+          },
+          body: JSON.stringify(body) 
+        });
+      };
+
+      postData(body).then((response) => {
+        clearInterval(intervalId);
+        if(response.status !== 200 ) {
+          throw  new Error('error network status is`nt 200');
+        }
+        form.removeChild(spinner);
+        [...form.elements].forEach((item) => {
+          if(item.tagName === 'INPUT' && item.value !== '') {
+            item.value = '';
+            item.classList.remove('error');
+            item.classList.remove('success');
+          } 
+        });
+        statusMessage.textContent = successMessage;
+      }) 
+      .catch((error) => {
+        console.error(error);
+        statusMessage.textContent = errorMessage;
+        form.removeChild(spinner);
+      });        
+    } else {
+      statusMessage.textContent = nullMessage;
+    }
   });
 };
 

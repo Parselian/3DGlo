@@ -1,7 +1,6 @@
 class Validator {
   constructor({selector, pattern = {}, method}) {
     this.form = document.querySelector(selector);
-    this.button = this.form.querySelector('.form-btn');
     this.pattern = pattern;
     this.method = method;
     this.elementsForm = [...this.form.elements].filter(item => {
@@ -11,7 +10,7 @@ class Validator {
   }
 
   init() {
-    this.button.classList.add('button-error');
+    // this.button.classList.add('button-error');
     this.applyStyle();
     this.setPattern();
     this.elementsForm.forEach(elem => elem.addEventListener('change', this.checkIt.bind(this)));
@@ -38,12 +37,8 @@ class Validator {
     if(this.method) {
       const method = this.method[elem.id];
 
-      // console.log(method);
-  
       if(method) {
         return method.every(item => {
-          // console.log(this.pattern[item[1]]);
-          // console.log(validatorMethod[item[0]](elem, this.pattern[item[1]]));
           return validatorMethod[item[0]](elem, this.pattern[item[1]]);
         });
       }
@@ -56,7 +51,6 @@ class Validator {
 
   checkIt(event) {
     const target = event.target;
-    let arr = []
 
     if(this.isValid(target)) {
       this.showSuccess(target);
@@ -65,26 +59,7 @@ class Validator {
       this.showError(target);
       this.error.add(target);
     }
-
-    this.elementsForm.forEach((ite, i) => {
-      if(ite.matches('.error') || ite.value === '' || ite.value === null) {
-        arr[i] = 0;
-      }
-      if(!ite.matches('.error') && ite.value !== '' && ite.value !== null) {
-        arr[i] = 1;
-      }
-    });
-
-    if(arr.join('') === '111' || arr.join('') === '1111') {
-      this.button.classList.remove('button-error');
-      arr = [];
-    } else {
-      this.button.classList.add('button-error');
-      arr = [];
-    }
   }
-
-  /* можно записать результаты в массив и если все будут единички, то активировать кнопку, иначе заблокировать */
 
 
   showError(elem) {
