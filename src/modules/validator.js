@@ -82,7 +82,6 @@ class Validator {
       this.button.classList.add('button-error');
       arr = [];
     }
-    console.log(arr);
   }
 
   /* можно записать результаты в массив и если все будут единички, то активировать кнопку, иначе заблокировать */
